@@ -1,0 +1,4 @@
+build.xml
+XXXManager.java
+XXXDAO.java
+XXXJdbcDao.java
