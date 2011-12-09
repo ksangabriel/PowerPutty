@@ -1,5 +1,5 @@
 ct-hosts=clear-tool-telnet-server-01|clear-tool-telnet-server-02|
-ver-streams=product-version-01|product-version-02|product-version-03|
+product-versions=product-version-01|product-version-02|product-version-03|
 dev-streams=product-dev-01|product-dev-02|product-dev-03|
 ct-uname=telnet_user
 ct-pwd=password

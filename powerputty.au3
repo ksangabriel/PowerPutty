@@ -20,6 +20,7 @@ dim $global_temp_directory                          = $global_powerputty_home & 
 dim $global_temp_zip_directory                      = $global_powerputty_home & "/tmp-zip" 
 dim $global_directory_arc_checkedout_files_dot_zip  = $global_powerputty_home & "/archived/previous-checkedout-files"
 dim $global_directory_new_checkedout_files_dot_zip  = $global_powerputty_home & "/modify/new-checkedout-files"
+dim $commandsToSetCurrentWorkspace                  = "ncwsrc; cd ..; cd ..; source profile; cd src;"
 
 ;==============================================================================
 ; CONFIGURATION VARIABLES
@@ -332,7 +333,7 @@ Func PreparePatch_CheckOutNewFiles(ByRef $ar_list_of_files_to_check_out, _
     
     $tmp = ""
     ; CHECK OUT NEW FILES
-    $tmp = $tmp & "ct co -nc `tr -s '\n\' ' ' < " & $list_of_new_checkedout_files & "`;"   
+    $tmp = $tmp & "cleartool co -nc `tr -s '\n\' ' ' < " & $list_of_new_checkedout_files & "`;"   
     Send($tmp & "{ENTER}")
     Sleep($delayBetweenCmds * $filecount)
 EndFunc
@@ -365,11 +366,11 @@ Func SetCurrentCleartoolStream($cleartoolstream, $delayBetweenCmds)
     Sleep($delayBetweenCmds) 
     Send("bash{ENTER}")
     Sleep($delayBetweenCmds) 
-    Send("ct setview "& $cleartoolstream &"{ENTER}")
+    Send("cleartool setview "& $cleartoolstream &"{ENTER}")
     Sleep($delayBetweenCmds) 
     Send("bash{ENTER}")
     Sleep($delayBetweenCmds) 
-    Send("ncwsrc; cd ..; cd ..; source profile; cd src; {ENTER}")
+    Send($commandsToSetCurrentWorkspace & "{ENTER}")
     Sleep($delayBetweenCmds) 
 EndFunc
 
@@ -377,10 +378,10 @@ Func PreparePatch_BackUpChanges($list_of_prev_checkedout_files, _
         $list_of_prev_checkedout_files_zipped, _ 
         $delayBetweenCmds) 
 
-    $tmp = "ct co -nc build.xml;" ; whatever file. just make sure one file is checked out
+    $tmp = "cleartool co -nc build.xml;" ; whatever file. just make sure one file is checked out
     
     ; GET THE LIST OF CHECKED OUT FILES
-    $tmp = $tmp & "ct lsact -l | grep CHECKEDOUT > "   & $list_of_prev_checkedout_files & ";"    
+    $tmp = $tmp & "cleartool lsact -l | grep CHECKEDOUT > "   & $list_of_prev_checkedout_files & ";"    
     $tmp = $tmp & "perl -p -i -e 's/.xml.*/.xml/g' "   & $list_of_prev_checkedout_files & ";"
     $tmp = $tmp & "perl -p -i -e 's/.java.*/.java/g' " & $list_of_prev_checkedout_files & ";"
     $tmp = $tmp & "perl -p -i -e 's/.jsp.*/.jsp/g' "   & $list_of_prev_checkedout_files & ";"    
@@ -390,7 +391,7 @@ Func PreparePatch_BackUpChanges($list_of_prev_checkedout_files, _
     $tmp = $tmp & "cat " & $list_of_prev_checkedout_files & " | xargs zip " & $list_of_prev_checkedout_files_zipped & ";"
     
     ; UNDO CHECK OUTS
-    $tmp = $tmp & "ct unco -rm `tr -s '\n\' ' ' < " & $list_of_prev_checkedout_files & "`;"
+    $tmp = $tmp & "cleartool unco -rm `tr -s '\n\' ' ' < " & $list_of_prev_checkedout_files & "`;"
     Send($tmp & "{ENTER}")
     Sleep($delayBetweenCmds * 2);
 EndFunc
